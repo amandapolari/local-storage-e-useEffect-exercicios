@@ -6,34 +6,50 @@ function App() {
     const [valorDoInput, setValorDoInput] = useState('');
     const [filtro, setFiltro] = useState('');
 
-    // useEffect() => {
-    //   () => {
-
-    //   },
-    //   []
-    // };
-
-    // useEffect() => {
-    //   () => {
-
-    //   },
-    //   []
-    // };
-
     const pegarValorDoInput = (event) => {
-        console.log('aaa');
+        setValorDoInput(event.target.value);
     };
 
     const criarTarefa = () => {
-        console.log('aaa');
+        if (valorDoInput.length && valorDoInput !== '') {
+            const novaTarefa = {
+                id: Date.now(),
+                texto: valorDoInput,
+                completa: false,
+            };
+
+            const novasTarefas = [...tarefas, novaTarefa];
+            setTarefas(novasTarefas);
+            setValorDoInput('');
+        }
+    };
+
+    useEffect(() => {
+        criarTarefa();
+    }, [tarefas]);
+
+    const adicionaTarefaComEnter = (event) => {
+        if (event.keyCode === 13) {
+            criarTarefa();
+        }
     };
 
     const selecionarTarefa = (id) => {
-        console.log('aaa');
+        const tarefasAtualizadas = tarefas.map((tarefa) => {
+            if (tarefa.id === id) {
+                return {
+                    ...tarefa,
+                    completa: !tarefa.completa,
+                };
+            }
+            return tarefa;
+        });
+
+        setTarefas(tarefasAtualizadas);
     };
 
     const pegarValorDoSelect = (event) => {
-        console.log('aaa');
+        setFiltro(event.target.value);
     };
 
     const listaFiltrada = tarefas.filter((tarefa) => {
@@ -51,7 +67,11 @@ function App() {
         <DivContainer>
             <h1>Lista de tarefas</h1>
             <InputsContainer>
-                <input value={valorDoInput} onChange={pegarValorDoInput} />
+                <input
+                    value={valorDoInput}
+                    onChange={pegarValorDoInput}
+                    onKeyDown={(event) => adicionaTarefaComEnter(event)}
+                />
                 <button onClick={criarTarefa}>Adicionar</button>
             </InputsContainer>
             <br />
@@ -68,6 +88,7 @@ function App() {
                 {listaFiltrada.map((tarefa) => {
                     return (
                         <Tarefa
+                            key={tarefa.id}
                             completa={tarefa.completa}
                             onClick={() => selecionarTarefa(tarefa.id)}
                         >
