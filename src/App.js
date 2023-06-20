@@ -6,6 +6,17 @@ function App() {
     const [valorDoInput, setValorDoInput] = useState('');
     const [filtro, setFiltro] = useState('');
 
+    useEffect(() => {
+      const tarefasArmazenadas = JSON.parse(localStorage.getItem("listaTarefas"));
+  
+      tarefasArmazenadas && setTarefas(tarefasArmazenadas);
+    }, []);
+  
+    useEffect(() => {
+      tarefas.length &&
+        localStorage.setItem("listaTarefas", JSON.stringify(tarefas));
+    }, [tarefas]);
+
     const pegarValorDoInput = (event) => {
         setValorDoInput(event.target.value);
     };
